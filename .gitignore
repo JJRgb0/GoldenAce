@@ -1,0 +1,10 @@
+.env
+.env.local
+/src/node_modules
+/client/node_modules
+/client/dist
+/client/.env
+.vercel
+.vercelignore
+.vscode
+.env*.local
