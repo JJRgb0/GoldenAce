@@ -2,7 +2,7 @@ import { Dispatch, useState } from "react";
 import { SetStateAction } from "react";
 import { cn } from "../../lib/utils";
 import { useDispatch } from "react-redux";
-import { toggleVisibility } from "../../redux/slices/arcadeVisSlice";
+import { toggleVisibility } from "../../redux/slices/arcadeSlice";
 
 export default function Manual({ setView }: { setView: Dispatch<SetStateAction<boolean>> }) {
 

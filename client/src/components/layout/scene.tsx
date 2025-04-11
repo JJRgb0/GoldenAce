@@ -1,14 +1,12 @@
 import { Canvas, GLProps, useFrame, useThree } from "@react-three/fiber";
-import { ReactElement, useRef } from "react";
+import { JSX, useRef } from "react";
 import * as THREE from "three";
-import Arcade from "./arcade";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { cn } from "../../lib/utils";
-import { useSelector } from "react-redux";
-import { IRootState } from "../../redux";
+import { PerspectiveCamera } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import Arcade from "./arcade";
 
-const SceneContent = ({ children }: { children: ReactElement }) => {
+export default function Screen({ children }: { children: JSX.Element | null }) {
+
     const { size } = useThree();
 
     // Responsividade
@@ -82,30 +80,17 @@ const SceneContent = ({ children }: { children: ReactElement }) => {
                 shadow-bias={-0.0005}
             />
             <ambientLight intensity={0.05} />
-            <PerspectiveCamera makeDefault position={[0, cameraYPosition, 2.7]} rotation={[cameraXRotation, 0, cameraZRotation]} fov={cameraFov} />
+            <PerspectiveCamera makeDefault near={0.01} far={6} position={[0, cameraYPosition, 2.7]} rotation={[cameraXRotation, 0, cameraZRotation]} fov={cameraFov} />
             <Arcade position={[0, 0, 0]} scale={[1 + arcadeStretch, 1, 1]} rotation={[0, Math.PI, 0]}>
                 {children}
             </Arcade>
+            <EffectComposer>
+                <Bloom
+                    intensity={0.1} // Intensidade do brilho
+                    luminanceThreshold={0.7} // Limiar de luminância (aplica o bloom apenas a áreas brilhantes)
+                    luminanceSmoothing={0.05} // Suavidade do efeito
+                />
+            </EffectComposer>
         </>
-    );
-};
-
-export default function Screen({ children }: { children: ReactElement }) {
-    const visible = useSelector((state: IRootState) => state.arcade[0].arcadeVisible);
-    return (
-        <div aria-disabled={!visible} className={cn("relative w-full h-screen duration-1200", visible ? "opacity-100" : "opacity-0")}>
-            <Canvas tabIndex={!visible ? -1 : 0} className="absolute inset-0 z-0" shadows={{ type: THREE.PCFSoftShadowMap }} gl={{ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } } as GLProps}>
-                <SceneContent>
-                    {children}
-                </SceneContent>
-                <EffectComposer>
-                    <Bloom
-                        intensity={0.1} // Intensidade do brilho
-                        luminanceThreshold={0.7} // Limiar de luminância (aplica o bloom apenas a áreas brilhantes)
-                        luminanceSmoothing={0.05} // Suavidade do efeito
-                    />
-                </EffectComposer>
-            </Canvas>
-        </div>
     )
 }

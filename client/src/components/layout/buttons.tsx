@@ -5,7 +5,8 @@ import * as THREE from "three"
 import { redPlasticMaterial } from "../../lib/materials"
 import { useDispatch, useSelector } from "react-redux"
 import { IRootState } from "../../redux"
-import { toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
+import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
+import { setButtons } from "../../redux/slices/controlsSlice"
 
 export default function Buttons() {
 
@@ -88,6 +89,9 @@ export default function Buttons() {
         if (!buttonRef.current || !visible) return
         const button = buttonRef.current
         const i = button.name
+        dispatch(setButtons({
+            [i]: true,
+        }))
         if (buttonRef) {
             button.position.set(0, -0.02, 0)
             setButtonStates((prevState) => ({
@@ -101,6 +105,9 @@ export default function Buttons() {
         if (!buttonRef.current || !visible) return
         const button = buttonRef.current
         const i = button.name
+        dispatch(setButtons({
+            [i]: false,
+        }))
         if (button === buttonRefs.button2.current || button === buttonRefs.button3.current) {
             setScreenCounter(0);
         }
@@ -178,6 +185,7 @@ export default function Buttons() {
             }
             else {
                 dispatch(toggleScreenVisibility(true));
+                dispatch(setPath('/entrace'))
             }
         }
     })

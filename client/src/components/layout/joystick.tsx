@@ -3,6 +3,9 @@ import { useFrame } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { grayPlasticMaterial, redPlasticMaterial, silverMaterial } from '../../lib/materials'
+import { useDispatch, useSelector } from 'react-redux'
+import { IRootState } from '../../redux'
+import { setJoystick } from '../../redux/slices/controlsSlice'
 
 export default function Joystick() {
 
@@ -10,6 +13,7 @@ export default function Joystick() {
         {
             nodes: Record<string, any>,
         }
+    const dispatch = useDispatch()
 
     // Refs
     const joystick = useRef<THREE.Mesh>(null)
@@ -64,6 +68,7 @@ export default function Joystick() {
             if (!left && joystick.current.rotation.z < 0 && !isDragging) joystick.current.rotation.z += joystickSpeed, joystick.current.rotation.y += joystickSpeed / 3
             if (right && joystick.current.rotation.z < 0.35) joystick.current.rotation.z += joystickSpeed, joystick.current.rotation.y += joystickSpeed / 3
             if (!right && joystick.current.rotation.z > 0.07 && !isDragging) joystick.current.rotation.z -= joystickSpeed, joystick.current.rotation.y -= joystickSpeed / 3
+            dispatch(setJoystick({ up: joystick.current.rotation.x > 0.075 ? true : false, down: joystick.current.rotation.x < -0.075 ? true : false, left: joystick.current.rotation.z < -0.075, right: joystick.current.rotation.z > 0.075 }))
         }
     })
 
