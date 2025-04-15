@@ -6,10 +6,12 @@ import Entrace from './components/utils/entrace';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { IRootState, store } from './redux';
 import { setPath, toggleScreenVisibility, toggleVisibility } from './redux/slices/arcadeSlice';
-import GamesList from './components/pages/gamesList/gamesList';
+import GamesList from './components/pages/games-list';
 import { cn } from './lib/utils';
 import { Canvas, GLProps } from '@react-three/fiber';
 import * as THREE from 'three';
+import TurnOff from './components/utils/turn-off';
+import Options from './components/pages/options';
 
 function App() {
   const [manualView, setManualView] = useState<boolean>(true);
@@ -20,7 +22,7 @@ function App() {
   const isInDevelopment = import.meta.env.VITE_DEVELOPMENT === 'true';
 
   useEffect(() => {
-    if (isInDevelopment) {
+    if (isInDevelopment && 0 > 1) {
       setManualView(false);
       dispatch(toggleVisibility(true))
       dispatch(toggleScreenVisibility(true))
@@ -48,6 +50,10 @@ function App() {
         return <Entrace />;
       case '/':
         return <Home />;
+      case '/quit':
+        return <TurnOff />;
+      case '/options':
+        return <Options />;
       case '/games':
         return <GamesList />;
       default:

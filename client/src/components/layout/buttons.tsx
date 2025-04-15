@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { IRootState } from "../../redux"
 import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
 import { setButtons } from "../../redux/slices/controlsSlice"
+import { getExternalSound } from "../../lib/utils"
 
 export default function Buttons() {
 
@@ -19,32 +20,17 @@ export default function Buttons() {
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [buttonClickSound, setButtonClickSound] = useState<AudioBuffer | null>(null);
 
-    // Inicializar o AudioContext e carregar o som dos botões
+    // Carregar o som do botão
     useEffect(() => {
-        const ctx = new AudioContext()
-        setAudioContext(ctx);
-
-        // Carregar o som
-        const loadSound = async () => {
-            try {
-                const response = await fetch('/audios/button.mp3');
-                const arrayBuffer = await response.arrayBuffer();
-                const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-                setButtonClickSound(audioBuffer);
-            } catch (error) {
-                console.error('Erro ao carregar o som:', error);
-            }
-        };
-        loadSound();
-
-        // Fechar o AudioContext ao desmontar o componente
-        return () => {
-            ctx.close();
-        };
+        getExternalSound({
+            setContext: setAudioContext,
+            setSoundState: setButtonClickSound,
+            audioPath: '/audios/button.mp3',
+        })
     }, []);
 
-    // Função para tocar o som dos botões
-    const playSound = () => {
+    // Tocar o som dos botões
+    const playButtonSound = () => {
         if (audioContext && buttonClickSound) {
             const source = audioContext.createBufferSource();
             source.buffer = buttonClickSound;
@@ -98,7 +84,7 @@ export default function Buttons() {
                 ...prevState,
                 [`isButton${i}Pressed`]: true
             }));
-            playSound();
+            playButtonSound();
         }
     }
     const onButtonUp = (buttonRef: RefObject<THREE.Mesh | null>) => {

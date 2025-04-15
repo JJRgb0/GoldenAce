@@ -13,7 +13,7 @@ permissions:
 
 # Jobs que o workflow vai executar
 jobs:
-  build-and-lint:
+  build:
     runs-on: ubuntu-latest # Máquina virtual onde o job será executado
 
     steps:
@@ -29,11 +29,15 @@ jobs:
 
       # Instala as dependências
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd client
+          npm install
 
       # Roda o build
       - name: Build project
-        run: npm run build # Ajuste para o comando que você usa para build
+        run: |
+          cd client
+          npm run build
 
       # Deploy na vercel
       - name: Deploy to Vercel

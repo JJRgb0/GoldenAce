@@ -61,7 +61,7 @@ export const screenMaterial = new THREE.MeshPhysicalMaterial({
 });
 
 export const neonOffMaterial = new THREE.MeshStandardMaterial({
-    color: '#D3D3D3', // Cinza claro para simular o tubo de neon apagado
+    color: '#1A1A1A', // Cinza escuro para simular o tubo de neon apagado
     emissiveIntensity: 4, // Intensidade de emissão
     metalness: 0, // Não metálico
     roughness: 0.5, // Acabamento semibrilhante

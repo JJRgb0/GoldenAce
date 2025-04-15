@@ -28,7 +28,7 @@ export default function Manual({ setView }: { setView: Dispatch<SetStateAction<b
                 <p className="text-white sm:text-lg text-sm font-raleway opacity-80">
                     Joystick: WASD
                     <br />
-                    Buttons: Arrow keys
+                    Buttons: IJKL
                     <br />
                     <span className="sm:text-base text-xs italic font-raleway">&#40;Or you can press it manually&#41;</span>
                 </p>

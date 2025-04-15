@@ -18,29 +18,50 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
     }
 
   const screenVisible = useSelector((state: IRootState) => state.arcade[0].screenVisible);
+  const [hue, setHue] = useState(0);
+  const [saturation, setSaturation] = useState(0);
   const [lightness, setLightness] = useState(0.1);
+  const [emissiveLightness, setEmissiveLightness] = useState(0);
 
-  const getCycleColor = (t: number, lightness: number) => {
-    const colorMin = 0.5;
-    const colorMax = 0.8;
-    const colorRange = colorMax - colorMin;
-    const hue = colorMin + (Math.sin(t * 0.2) * 0.5 + 0.5) * colorRange;
-    const saturation = 0.8;
-    return new THREE.Color().setHSL(hue, saturation, lightness);
+  const getCycleColorAnimation = (t: number) => {
+    if (screenVisible) {
+      setHue(0.5 + (Math.sin(t * 0.2) * 0.5 + 0.5) * 0.3)
+      if (saturation < 0.8) {
+        setSaturation((prev) => prev + 0.005);
+      }
+      if (lightness < 0.5) {
+        setLightness((prev) => prev + 0.005);
+      }
+      if (emissiveLightness < 0.5) {
+        setEmissiveLightness((prev) => prev + 0.001);
+      }
+    }
+    if (!screenVisible) {
+      if (hue > 0.5) {
+        setHue((prev) => prev - 0.005);
+      }
+      else if (hue === 0.5) {
+        setHue(0);
+      }
+      if (saturation > 0) {
+        setSaturation((prev) => prev - 0.005);
+      }
+      if (lightness > 0.1) {
+        setLightness((prev) => prev - 0.005);
+      }
+      if (emissiveLightness > 0) {
+        setEmissiveLightness((prev) => prev - 0.005);
+      }
+    }
   };
 
   useFrame((state) => {
 
     const t = state.clock.elapsedTime
-    const color = getCycleColor(t, lightness);
+    getCycleColorAnimation(t);
 
-    if (screenVisible) {
-      if (lightness < 0.5) {
-        setLightness((prev) => prev + 0.005);
-      }
-      neonOffMaterial.color = color;
-      neonOffMaterial.emissive = color;
-    }
+    neonOffMaterial.color.set(new THREE.Color().setHSL(hue, saturation, lightness));
+    neonOffMaterial.emissive.set(new THREE.Color().setHSL(hue, saturation, emissiveLightness));
 
   });
 
@@ -66,10 +87,10 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
       </mesh>
       <KeyboardControls
         map={[
-          { name: 'up', keys: ['ArrowUp'] },
-          { name: 'down', keys: ['ArrowDown'] },
-          { name: 'left', keys: ['ArrowLeft'] },
-          { name: 'right', keys: ['ArrowRight'] },
+          { name: 'up', keys: ['I', 'i'] },
+          { name: 'down', keys: ['K', 'k'] },
+          { name: 'left', keys: ['J', 'j'] },
+          { name: 'right', keys: ['L', 'l'] },
         ]}>
         <Buttons />
       </KeyboardControls>
