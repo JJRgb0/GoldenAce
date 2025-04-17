@@ -18,6 +18,7 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
     }
 
   const screenVisible = useSelector((state: IRootState) => state.arcade[0].screenVisible);
+
   const [hue, setHue] = useState(0);
   const [saturation, setSaturation] = useState(0);
   const [lightness, setLightness] = useState(0.1);

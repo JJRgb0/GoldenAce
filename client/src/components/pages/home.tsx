@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn, getExternalSound } from "../../lib/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
@@ -16,6 +16,9 @@ export default function Home() {
     const [isTurningOff, setIsTurningOff] = useState(false);
     const [changeOpSound, setChangeOpSound] = useState<AudioBuffer | null>(null);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+
+    const homeScreen = useRef<HTMLDivElement | null>(null);
+
     const dispatch = useDispatch();
     const joystickControls = useSelector((state: IRootState) => state.controls[0])
     const buttonsControls = useSelector((state: IRootState) => state.controls[1])
@@ -61,7 +64,7 @@ export default function Home() {
 
         if (optionsDelay) return;
         handleJoystick();
-    })
+    }, [joystickControls, optionsDelay]);
 
     // Selecionar a opção atual
     useEffect(() => {
@@ -79,11 +82,10 @@ export default function Home() {
     // Animação de desligar
     const exit = () => {
         setIsTurningOff(true);
-        const tela = document.querySelector('.tela') as HTMLDivElement;
-        if (tela) {
+        if (homeScreen.current) {
             const screenTurningOff = [
-                { width: '878px', height: '777px' },
-                { width: '0px', height: '0px' },
+                { height: '100%' },
+                { height: '0px' },
             ]
             const screenTurningOffTiming = {
                 duration: 500,
@@ -91,26 +93,28 @@ export default function Home() {
                 easing: 'ease-in-out',
             }
 
-            tela.animate(screenTurningOff, screenTurningOffTiming);
+            homeScreen.current.animate(screenTurningOff, screenTurningOffTiming);
             setTimeout(() => {
-                setIsTurningOff(false);
                 dispatch(setPath('/quit'));
+                setIsTurningOff(false);
             }
                 , 475);
         }
     }
 
     return (
-        <div className={cn("text-black relative bg-[#050505] w-[100%] h-[100%] bg-cover overflow-hidden", isTurningOff ? "rounded-full" : "rounded-none")}>
-            <nav className="flex justify-center items-center w-auto h-[100%] mt-7">
-                <ul className="flex flex-col justify-center items-center gap-15">
-                    {menuItems.map((item, index) => (
-                        <li key={index} className={cn("text-7xl font-bold text-white font-byte", currentOption === item.option ? "" : "text-gray-400")}>
-                            {item.name}
-                        </li>
-                    ))}
-                </ul>
-            </nav>
+        <div className="w-full h-full flex justify-center items-center">
+            <menu ref={homeScreen} className={cn("text-black relative bg-background w-full h-full bg-cover overflow-hidden", isTurningOff ? "rounded-[50%]" : "rounded-none")}>
+                <nav className="flex justify-center items-center w-auto h-[100%] mt-7">
+                    <ul className="flex flex-col justify-center items-center gap-15">
+                        {menuItems.map((item, index) => (
+                            <li key={index} className={cn("text-7xl font-bold text-white font-byte", currentOption === item.option ? "" : "text-gray-400")}>
+                                {item.name}
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            </menu>
         </div>
     )
 }

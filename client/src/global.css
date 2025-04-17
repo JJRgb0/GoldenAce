@@ -6,6 +6,7 @@
   --font-byte: "Bytesized", sans-serif;
   --font-raleway: "Raleway", sans-serif;
   --breakpoint-mf: '396px';
+  --color-background: #050505;
 }
 
 @keyframes noise {
@@ -84,4 +85,40 @@ body {
   pointer-events: none;
   animation: noise 1s infinite steps(8);
   /* Movimento rápido para estática */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  --webkit-appearance: none;
+  appearance: none;
+  background-color: #99a1af;
+  width: 25px;
+  height: 25px;
+  border-radius: 25%;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background-color: #99a1af;
+  width: 25px;
+  height: 25px;
+  border-radius: 25%;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(to right,
+      #6b6b6b,
+      /* Cor escura até o thumb */
+      #6b6b6b calc(var(--value, 0%) - 1%),
+      #ffffff calc(var(--value, 0%) + 1%),
+      /* Cor clara após o thumb */
+      #ffffff);
+}
+
+input[type="range"]::-moz-range-track {
+  background: linear-gradient(to right,
+      #6b6b6b,
+      /* Cor escura até o thumb */
+      #6b6b6b calc(var(--value, 0%) - 1%),
+      #ffffff calc(var(--value, 0%) + 1%),
+      /* Cor clara após o thumb */
+      #ffffff);
 }

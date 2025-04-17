@@ -12,6 +12,8 @@ import { Canvas, GLProps } from '@react-three/fiber';
 import * as THREE from 'three';
 import TurnOff from './components/utils/turn-off';
 import Options from './components/pages/options';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NotFound from './components/utils/404';
 
 function App() {
   const [manualView, setManualView] = useState<boolean>(true);
@@ -22,7 +24,7 @@ function App() {
   const isInDevelopment = import.meta.env.VITE_DEVELOPMENT === 'true';
 
   useEffect(() => {
-    if (isInDevelopment && 0 > 1) {
+    if (isInDevelopment) {
       setManualView(false);
       dispatch(toggleVisibility(true))
       dispatch(toggleScreenVisibility(true))
@@ -64,15 +66,26 @@ function App() {
   return (
     <>
       {manualView && <Manual setView={setManualView} />}
-      <div aria-disabled={!visible} className={cn("relative w-full h-screen duration-1200", visible ? "opacity-100" : "opacity-0")}>
-        <Canvas className="absolute inset-0 z-0" shadows={{ type: THREE.PCFSoftShadowMap }} gl={{ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } } as GLProps}>
-          <Screen>
-            {
-              <Provider store={store}>{getComponent()}</Provider>
-            }
-          </Screen>
-        </Canvas>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={
+            <div aria-disabled={!visible} className={cn("relative w-full h-screen duration-1200", visible ? "opacity-100" : "opacity-0")}>
+              <Canvas
+                className="absolute inset-0 z-0"
+                shadows={{ type: THREE.PCFSoftShadowMap }}
+                gl={{ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } } as GLProps}
+              >
+                <Screen>
+                  {
+                    <Provider store={store}>{getComponent()}</Provider>
+                  }
+                </Screen>
+              </Canvas>
+            </div>
+          } />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
