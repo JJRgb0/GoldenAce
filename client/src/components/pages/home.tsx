@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { cn, getExternalSound } from "../../lib/utils";
+import { cn, getExternalSound, playSound } from "../../lib/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
 import { IRootState } from "../../redux";
@@ -22,6 +22,7 @@ export default function Home() {
     const dispatch = useDispatch();
     const joystickControls = useSelector((state: IRootState) => state.controls[0])
     const buttonsControls = useSelector((state: IRootState) => state.controls[1])
+    const arcadeVolume = useSelector((state: IRootState) => state.arcade[2].volume)
 
     // Carregar o som de mudança de opção
     useEffect(() => {
@@ -32,27 +33,22 @@ export default function Home() {
         });
     }, [])
 
-    // Tocar o som de mudança de opção
-    const playChangeOpSound = () => {
-        if (audioContext && changeOpSound) {
-            const source = audioContext.createBufferSource();
-            const gainNode = audioContext.createGain();
-            gainNode.gain.value = 0.1;
-            gainNode.connect(audioContext.destination);
-            source.buffer = changeOpSound;
-            source.connect(gainNode);
-            source.start(0);
-        }
-    };
-
     // Mudar a opção atual
     useEffect(() => {
         const handleJoystick = () => {
             if (joystickControls.up) {
-                playChangeOpSound()
+                playSound({
+                    volume: arcadeVolume!,
+                    audioContext: audioContext,
+                    sound: changeOpSound
+                })
                 setCurrentOption((prev) => (prev === 1 ? menuItems.length : prev - 1));
             } else if (joystickControls.down) {
-                playChangeOpSound()
+                playSound({
+                    volume: arcadeVolume!,
+                    audioContext: audioContext,
+                    sound: changeOpSound
+                })
                 setCurrentOption((prev) => (prev === menuItems.length ? 1 : prev + 1));
             }
             setOptionsDelay(true);

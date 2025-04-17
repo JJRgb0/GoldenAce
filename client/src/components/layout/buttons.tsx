@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { IRootState } from "../../redux"
 import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
 import { setButtons } from "../../redux/slices/controlsSlice"
-import { getExternalSound } from "../../lib/utils"
+import { getExternalSound, playSound } from "../../lib/utils"
 
 export default function Buttons() {
 
@@ -28,16 +28,6 @@ export default function Buttons() {
             audioPath: '/audios/button.mp3',
         })
     }, []);
-
-    // Tocar o som dos botões
-    const playButtonSound = () => {
-        if (audioContext && buttonClickSound) {
-            const source = audioContext.createBufferSource();
-            source.buffer = buttonClickSound;
-            source.connect(audioContext.destination);
-            source.start(0);
-        }
-    };
 
     // Redux
     const dispatch = useDispatch();
@@ -84,7 +74,11 @@ export default function Buttons() {
                 ...prevState,
                 [`isButton${i}Pressed`]: true
             }));
-            playButtonSound();
+            playSound({
+                volume: 400,
+                audioContext,
+                sound: buttonClickSound
+            });
         }
     }
     const onButtonUp = (buttonRef: RefObject<THREE.Mesh | null>) => {

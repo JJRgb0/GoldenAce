@@ -13,7 +13,7 @@ permissions:
 
 # Jobs que o workflow vai executar
 jobs:
-  build:
+  build and deploy:
     runs-on: ubuntu-latest # Máquina virtual onde o job será executado
 
     steps:
@@ -41,4 +41,7 @@ jobs:
 
       # Deploy na vercel
       - name: Deploy to Vercel
-        run: vercel --prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel --prod --token $VERCEL_TOKEN

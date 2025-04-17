@@ -9,6 +9,10 @@ const arcadeSlice = createSlice({
         },
         {
             path: undefined as string | undefined,
+        },
+        {
+            volume: localStorage.getItem('arcadeVolume') ? Number(localStorage.getItem('arcadeVolume')) : 50,
+            brightness: localStorage.getItem('arcadeBrightness') ? Number(localStorage.getItem('arcadeBrightness')) : 50,
         }
     ],
     reducers: {
@@ -20,9 +24,17 @@ const arcadeSlice = createSlice({
         },
         setPath(state, action) {
             state[1].path = action.payload
+        },
+        setVolume(state, action) {
+            state[2].volume = action.payload
+            localStorage.setItem('arcadeVolume', action.payload.toString());
+        },
+        setBrightness(state, action) {
+            state[2].brightness = action.payload
+            localStorage.setItem('arcadeBrightness', action.payload.toString());
         }
     }
 })
 
-export const { toggleVisibility, toggleScreenVisibility, setPath } = arcadeSlice.actions;
+export const { toggleVisibility, toggleScreenVisibility, setPath, setVolume, setBrightness } = arcadeSlice.actions;
 export const arcadeReducer = arcadeSlice.reducer;

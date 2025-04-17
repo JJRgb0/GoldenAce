@@ -22,7 +22,7 @@ export default function Manual({ setView }: { setView: Dispatch<SetStateAction<b
     return (
         <div className={cn("fixed top-0 left-0 inset-0 z-1000 w-full h-screen bg-black flex justify-center items-center duration-2000", !animation ? "opacity-100" : "opacity-0")}>
             <div className="sm:w-[80%] w-[90%] h-full flex flex-col gap-5 justify-center items-start">
-                <p className="sm:text-sm text-xs text-white font-raleway opacity-80 italic mb-[-15px] before:content-['|'] before:pr-1">This experience is developed to run on desktop devices</p>
+                <p className="sm:text-sm text-xs text-white font-raleway opacity-80 italic mb-[-15px] before:content-['|'] before:pr-1">This experience was developed to run on desktop devices</p>
                 <h1 className="text-white sm:text-2xl text-xl font-bold italic font-raleway">
                     To turn on the arcade press and hold the left and right button at the same time
                 </h1>

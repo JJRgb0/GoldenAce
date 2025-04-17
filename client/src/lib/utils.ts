@@ -24,3 +24,15 @@ export function getExternalSound({ setContext, setSoundState, audioPath }: { set
         ctx.close();
     }
 }
+
+export function playSound({ volume, audioContext, sound }: { volume: number; audioContext: AudioContext | null; sound: AudioBuffer | null }) {
+    if (audioContext && sound) {
+        const source = audioContext.createBufferSource();
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = volume / 500;
+        gainNode.connect(audioContext.destination);
+        source.buffer = sound;
+        source.connect(gainNode);
+        source.start(0);
+    }
+}
