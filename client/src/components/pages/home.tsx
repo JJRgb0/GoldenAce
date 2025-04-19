@@ -5,8 +5,8 @@ import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice"
 import { IRootState } from "../../redux";
 
 const menuItems = [
-    { name: 'GAMES', link: '/games', option: 1 },
-    { name: 'OPTIONS', link: '/options', option: 2 },
+    { name: 'GAMES', path: '/games', option: 1 },
+    { name: 'OPTIONS', path: '/options', option: 2 },
     { name: 'QUIT', option: 3 },
 ]
 
@@ -69,7 +69,7 @@ export default function Home() {
                 exit();
             }
             else {
-                dispatch(setPath(menuItems[currentOption - 1].link));
+                dispatch(setPath(menuItems[currentOption - 1].path));
             }
         }
 
@@ -99,18 +99,18 @@ export default function Home() {
     }
 
     return (
-        <div className="w-full h-full flex justify-center items-center">
+        <section className="w-full h-full flex justify-center items-center">
             <menu ref={homeScreen} className={cn("text-black relative bg-background w-full h-full bg-cover overflow-hidden", isTurningOff ? "rounded-[50%]" : "rounded-none")}>
                 <nav className="flex justify-center items-center w-auto h-[100%] mt-7">
                     <ul className="flex flex-col justify-center items-center gap-15">
                         {menuItems.map((item, index) => (
-                            <li key={index} className={cn("text-7xl font-bold text-white font-byte", currentOption === item.option ? "" : "text-gray-400")}>
+                            <li key={index} className={cn("text-7xl font-bold text-white font-byte", currentOption === item.option ? "opacity-100" : "opacity-60")}>
                                 {item.name}
                             </li>
                         ))}
                     </ul>
                 </nav>
             </menu>
-        </div>
+        </section>
     )
 }

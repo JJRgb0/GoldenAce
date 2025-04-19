@@ -69,7 +69,7 @@ export default function Options() {
                 if (currentOption === 1) {
                     dispatch(setVolume(arcadeVolume === 0 ? 0 : arcadeVolume! - 1));
                 } else if (currentOption === 2) {
-                    dispatch(setBrightness(arcadeBrightness === 0 ? 0 : arcadeBrightness! - 1));
+                    dispatch(setBrightness(arcadeBrightness === 10 ? 10 : arcadeBrightness! - 1));
                 }
             } else if (joystickControls.right) {
                 if (currentOption === 1) {
@@ -108,17 +108,17 @@ export default function Options() {
     }, [buttonsControls[4]])
 
     return (
-        <menu className="text-black relative bg-background w-full h-full bg-cover overflow-hidden">
+        <menu className="relative bg-background w-full h-full">
             <nav className="flex justify-center flex-col items-center w-auto h-[100%] gap-30">
-                <label className={cn("flex flex-col justify-center items-center gap-8", currentOption === 1 ? "opacity-100" : "opacity-70")}>
+                <label className={cn("flex flex-col justify-center items-center gap-8", currentOption === 1 ? "opacity-100" : "opacity-60")}>
                     <span className="text-5xl font-bold text-white font-byte">Volume</span>
                     <input type="range" min="0" max="100" value={arcadeVolume} style={{ '--value': `${arcadeVolume}%` } as CSSProperties & { '--value'?: string }} className="w-[250px] h-3 bg-white rounded-xs appearance-none cursor-pointer" />
                 </label>
-                <label className={cn("flex flex-col justify-center items-center gap-8", currentOption === 2 ? "opacity-100" : "opacity-70")}>
+                <label className={cn("flex flex-col justify-center items-center gap-8", currentOption === 2 ? "opacity-100" : "opacity-60")}>
                     <span className="text-5xl font-bold text-white font-byte">Brightness</span>
                     <input type="range" min="0" max="100" value={arcadeBrightness} style={{ '--value': `${arcadeBrightness}%` } as CSSProperties & { '--value'?: string }} className="w-[250px] h-3 bg-white rounded-xs appearance-none cursor-pointer" />
                 </label>
-                <p className={cn("text-white text-4xl absolute ml-[64.5%] mb-[15%] px-3.5 py-2 border-2 rounded-lg font-bold font-byte text-center", currentOption === 1 ? "opacity-100" : "opacity-70")}>Test Volume <br /> Bottom Button</p>
+                <p className={cn("text-white text-4xl absolute ml-[64.5%] mb-[15%] px-3.5 py-2 border-2 rounded-lg font-bold font-byte text-center", currentOption === 1 ? "opacity-100" : "opacity-60")}>Test Volume <br /> Bottom Button</p>
             </nav>
         </menu>
     )

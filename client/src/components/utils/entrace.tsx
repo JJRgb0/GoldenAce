@@ -17,6 +17,10 @@ export default function Entrace() {
             if (video.current) {
                 video.current.playbackRate = 2;
             }
+        } else {
+            if (video.current) {
+                video.current.playbackRate = 1;
+            }
         }
     }, [buttonsControls[1]])
     return (

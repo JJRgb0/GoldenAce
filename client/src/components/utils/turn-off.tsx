@@ -7,7 +7,7 @@ export default function TurnOff() {
         const ctx = new AudioContext()
         const volume = ctx.createGain();
         volume.gain.value = 0.1;
-        const audio = new Audio('public/audios/turningOff.mp3');
+        const audio = new Audio('audios/turningOff.mp3');
         const source = ctx.createMediaElementSource(audio);
         source.connect(volume);
         volume.connect(ctx.destination);

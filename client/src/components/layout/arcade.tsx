@@ -83,7 +83,7 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
       />
       <mesh castShadow receiveShadow geometry={nodes.Screen.geometry} material={screenMaterial} >
         {/* Conteúdo da tela do fliperama */}
-        <Html occlude="blending" receiveShadow visible={screenVisible} distanceFactor={0.456} center className={`tela filter-[contrast(1.3)_brightness(${arcadeBrightness! / 50})_saturate(0.7)_sepia(0.1)_blur(0.2)] absolute cursor-default pointer-events-none translate-x-[-50%] translate-y-[-50%] w-[878px] h-[777px]`} scale={[1.64, 1.149, 1]} transform position={[0.007, 3.351, -0.446]} rotation={[0, Math.PI, 0]}>
+        <Html occlude="blending" receiveShadow visible={screenVisible} distanceFactor={0.456} center style={{ filter: `brightness(${arcadeBrightness! / 50}) saturate(0.8) sepia(0.2) blur(0.2px)` }} className='tela absolute cursor-default pointer-events-none translate-x-[-50%] translate-y-[-50%] w-[878px] h-[777px]' scale={[1.64, 1.149, 1]} transform position={[0.007, 3.351, -0.446]} rotation={[0, Math.PI, 0]}>
           {props.children}
         </Html>
       </mesh>

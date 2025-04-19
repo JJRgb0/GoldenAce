@@ -6,7 +6,7 @@ import Entrace from './components/utils/entrace';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { IRootState, store } from './redux';
 import { setPath, toggleScreenVisibility, toggleVisibility } from './redux/slices/arcadeSlice';
-import GamesList from './components/pages/games-list';
+import GamesList from './components/pages/game-list';
 import { cn } from './lib/utils';
 import { Canvas, GLProps } from '@react-three/fiber';
 import * as THREE from 'three';
