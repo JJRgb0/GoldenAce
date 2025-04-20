@@ -2,7 +2,11 @@ import { useDispatch } from "react-redux";
 import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
 
 export default function TurnOff() {
+
+    // Redux
     const dispatch = useDispatch();
+
+    // Function to play turn off audio
     const playAudio = () => {
         const ctx = new AudioContext()
         const volume = ctx.createGain();
@@ -13,5 +17,6 @@ export default function TurnOff() {
         volume.connect(ctx.destination);
         audio.play();
     }
+
     return <video autoPlay={true} onPlay={() => playAudio()} onEnded={() => (dispatch(setPath(undefined)), dispatch(toggleScreenVisibility(false)))} src="/videos/turnOffAnimation.mp4" className="h-full w-full" />
 }

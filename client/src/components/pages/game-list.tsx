@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "../../redux";
 import { setPath } from "../../redux/slices/arcadeSlice";
 import { getExternalSound, playSound } from "../../lib/utils";
+import useThrottle from "../../hooks/use-throttle";
 
 const games = [
     { name: 'Snake', path: '/snake' },
@@ -13,23 +14,28 @@ const games = [
 
 export default function GameList() {
 
-    const [optionsDelay, setOptionsDelay] = useState(false);
+    // Audio states
     const [changeOpSound, setChangeOpSound] = useState<AudioBuffer | null>(null);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+
+    // Component states
     const [currentOption, setCurrentOption] = useState(1);
     const [divIndex, setDivIndex] = useState(1);
     const [side, setSide] = useState<'left' | 'right' | undefined>(undefined);
 
+    // Redux
     const dispatch = useDispatch();
     const buttonsControls = useSelector((state: IRootState) => state.controls[1])
     const arcadeVolume = useSelector((state: IRootState) => state.arcade[2].volume)
     const joystickControls = useSelector((state: IRootState) => state.controls[0])
 
-    const sideOpStyle = "w-[137.5px] duration-350 absolute border-4 bg-blue-500 border-white rounded-md h-[275px] text-4xl text-white font-byte flex justify-center items-center";
-    const mainOpStyle = "w-[275px] duration-350 absolute border-4 bg-red-500 border-white rounded-md h-[550px] text-7xl text-white font-byte flex justify-center items-center";
+    // Refs
     const wrapper = useRef<HTMLDivElement>(null);
 
-    // Carregar os sons
+    const sideOpStyle = "w-[137.5px] duration-350 absolute border-4 bg-blue-500 border-white rounded-md h-[275px] text-4xl text-white font-byte flex justify-center items-center";
+    const mainOpStyle = "w-[275px] duration-350 absolute border-4 bg-red-500 border-white rounded-md h-[550px] text-7xl text-white font-byte flex justify-center items-center";
+
+    // Load sounds
     useEffect(() => {
         getExternalSound({
             setContext: setAudioContext,
@@ -38,40 +44,37 @@ export default function GameList() {
         });
     }, [])
 
-    // Mudar a opção atual
+    // Function to change the current option
+    const handleOptionChange = useThrottle(() => {
+        if (joystickControls.left) {
+            playSound({
+                volume: arcadeVolume!,
+                audioContext: audioContext,
+                sound: changeOpSound
+            })
+            setCurrentOption((prev) => (prev === 1 ? games.length : prev - 1));
+            setDivIndex((prev) => (prev === 1 ? 3 : prev - 1));
+            setSide('left');
+        } else if (joystickControls.right) {
+            playSound({
+                volume: arcadeVolume!,
+                audioContext: audioContext,
+                sound: changeOpSound
+            })
+            setCurrentOption((prev) => (prev === games.length ? 1 : prev + 1));
+            setDivIndex((prev) => (prev === 3 ? 1 : prev + 1));
+            setSide('right');
+        }
+    }, 350);
+
+    // Change current option
     useEffect(() => {
-        const handleJoystick = () => {
-            if (joystickControls.left) {
-                playSound({
-                    volume: arcadeVolume!,
-                    audioContext: audioContext,
-                    sound: changeOpSound
-                })
-                setCurrentOption((prev) => (prev === 1 ? games.length : prev - 1));
-                setDivIndex((prev) => (prev === 1 ? 3 : prev - 1));
-                setSide('left');
-            } else if (joystickControls.right) {
-                playSound({
-                    volume: arcadeVolume!,
-                    audioContext: audioContext,
-                    sound: changeOpSound
-                })
-                setCurrentOption((prev) => (prev === games.length ? 1 : prev + 1));
-                setDivIndex((prev) => (prev === 3 ? 1 : prev + 1));
-                setSide('right');
-            }
-            setOptionsDelay(true);
-            setTimeout(() => {
-                setOptionsDelay(false);
-            }
-                , 350);
-        };
+        if (joystickControls.left || joystickControls.right) {
+            handleOptionChange();
+        }
+    }, [joystickControls]);
 
-        if (optionsDelay) return;
-        handleJoystick();
-    }, [joystickControls, optionsDelay]);
-
-    // Voltar para o menu principal
+    // Go back to main menu
     useEffect(() => {
         if (buttonsControls[2]) {
             dispatch(setPath('/'))
@@ -79,9 +82,9 @@ export default function GameList() {
 
     }, [buttonsControls[2]]);
 
-    // Atualizar a opção atual e animar as opções no formato carrossel
+    // Update and animate options in carousel format
     useEffect(() => {
-        // Atualizar o conteúdo das opções
+        // Update the content of the options
         if (wrapper.current) {
             if (divIndex === 1) {
                 if (side === 'left') {
@@ -141,7 +144,7 @@ export default function GameList() {
                 }
             }
 
-            // Animação do carrossel
+            // Carousel animation
             if (divIndex === (side !== undefined ? 3 : null)) {
                 wrapper.current.children[0].setAttribute('class', `${mainOpStyle} translate-x-0 z-2`)
                 wrapper.current.children[1].setAttribute('class', `${sideOpStyle} translate-x-[250px] ${side === 'left' ? 'z-2' : ''}`)

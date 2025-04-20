@@ -6,13 +6,16 @@ import { toggleVisibility } from "../../redux/slices/arcadeSlice";
 
 export default function Manual({ setView }: { setView: Dispatch<SetStateAction<boolean>> }) {
 
+    // Component states
     const [animation, setAnimation] = useState<boolean>(false);
+
+    // Redux
     const dispatch = useDispatch();
 
+    // Function to handle the manual closing with delay
     const handleClick = () => {
         setAnimation(true);
         dispatch(toggleVisibility(true));
-        // Aguarda 2 segundos antes de esconder o manual para a animação
         setTimeout(() => {
             setView(false);
         }

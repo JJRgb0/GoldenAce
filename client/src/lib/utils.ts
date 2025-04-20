@@ -16,7 +16,7 @@ export function getExternalSound({ setContext, setSoundState, audioPath }: { set
             const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
             setSoundState(audioBuffer);
         } catch (error) {
-            console.error('Erro ao carregar o som:', error);
+            console.error('Error loading the sound:', error);
         }
     };
     loadSound();

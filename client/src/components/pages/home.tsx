@@ -3,6 +3,7 @@ import { cn, getExternalSound, playSound } from "../../lib/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath, toggleScreenVisibility } from "../../redux/slices/arcadeSlice";
 import { IRootState } from "../../redux";
+import useThrottle from "../../hooks/use-throttle";
 
 const menuItems = [
     { name: 'GAMES', path: '/games', option: 1 },
@@ -11,20 +12,25 @@ const menuItems = [
 ]
 
 export default function Home() {
+
+    // Component states
     const [currentOption, setCurrentOption] = useState(1);
-    const [optionsDelay, setOptionsDelay] = useState(false);
     const [isTurningOff, setIsTurningOff] = useState(false);
+
+    // Audio states
     const [changeOpSound, setChangeOpSound] = useState<AudioBuffer | null>(null);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
+    // Refs
     const homeScreen = useRef<HTMLDivElement | null>(null);
 
+    // Redux
     const dispatch = useDispatch();
     const joystickControls = useSelector((state: IRootState) => state.controls[0])
     const buttonsControls = useSelector((state: IRootState) => state.controls[1])
     const arcadeVolume = useSelector((state: IRootState) => state.arcade[2].volume)
 
-    // Carregar o som de mudança de opção
+    // Load sounds
     useEffect(() => {
         getExternalSound({
             setContext: setAudioContext,
@@ -33,36 +39,33 @@ export default function Home() {
         });
     }, [])
 
-    // Mudar a opção atual
+    // Function to change the current option
+    const handleJoystick = useThrottle(() => {
+        if (joystickControls.up) {
+            playSound({
+                volume: arcadeVolume!,
+                audioContext: audioContext,
+                sound: changeOpSound
+            })
+            setCurrentOption((prev) => (prev === 1 ? menuItems.length : prev - 1));
+        } else if (joystickControls.down) {
+            playSound({
+                volume: arcadeVolume!,
+                audioContext: audioContext,
+                sound: changeOpSound
+            })
+            setCurrentOption((prev) => (prev === menuItems.length ? 1 : prev + 1));
+        }
+    });
+
+    // Change the current option
     useEffect(() => {
-        const handleJoystick = () => {
-            if (joystickControls.up) {
-                playSound({
-                    volume: arcadeVolume!,
-                    audioContext: audioContext,
-                    sound: changeOpSound
-                })
-                setCurrentOption((prev) => (prev === 1 ? menuItems.length : prev - 1));
-            } else if (joystickControls.down) {
-                playSound({
-                    volume: arcadeVolume!,
-                    audioContext: audioContext,
-                    sound: changeOpSound
-                })
-                setCurrentOption((prev) => (prev === menuItems.length ? 1 : prev + 1));
-            }
-            setOptionsDelay(true);
-            setTimeout(() => {
-                setOptionsDelay(false);
-            }
-                , 300);
-        };
+        if (joystickControls.up || joystickControls.down) {
+            handleJoystick();
+        }
+    }, [joystickControls]);
 
-        if (optionsDelay) return;
-        handleJoystick();
-    }, [joystickControls, optionsDelay]);
-
-    // Selecionar a opção atual
+    // Select the current option
     useEffect(() => {
         if (buttonsControls[3]) {
             if (currentOption === 3) {
@@ -75,7 +78,7 @@ export default function Home() {
 
     }, [buttonsControls[3]]);
 
-    // Animação de desligar
+    // Arcade turn off animation
     const exit = () => {
         setIsTurningOff(true);
         if (homeScreen.current) {

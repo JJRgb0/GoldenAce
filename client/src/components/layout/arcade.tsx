@@ -17,14 +17,17 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
       materials: Record<string, any>
     }
 
+  // Redux
   const screenVisible = useSelector((state: IRootState) => state.arcade[0].screenVisible);
   const arcadeBrightness = useSelector((state: IRootState) => state.arcade[2].brightness);
 
+  // Component states
   const [hue, setHue] = useState(0);
   const [saturation, setSaturation] = useState(0);
   const [lightness, setLightness] = useState(0.1);
   const [emissiveLightness, setEmissiveLightness] = useState(0);
 
+  // Function to update the arcade lights color based on time
   const getCycleColorAnimation = (t: number) => {
     if (screenVisible) {
       setHue(0.5 + (Math.sin(t * 0.2) * 0.5 + 0.5) * 0.3)
@@ -57,6 +60,7 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
     }
   };
 
+  // Update the arcade lights color based on time
   useFrame((state) => {
 
     const t = state.clock.elapsedTime
@@ -82,7 +86,7 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
         material={neonOffMaterial}
       />
       <mesh castShadow receiveShadow geometry={nodes.Screen.geometry} material={screenMaterial} >
-        {/* Conteúdo da tela do fliperama */}
+        {/* Arcade screen content */}
         <Html occlude="blending" receiveShadow visible={screenVisible} distanceFactor={0.456} center style={{ filter: `brightness(${arcadeBrightness! / 50}) saturate(0.8) sepia(0.2) blur(0.2px)` }} className='tela absolute cursor-default pointer-events-none translate-x-[-50%] translate-y-[-50%] w-[878px] h-[777px]' scale={[1.64, 1.149, 1]} transform position={[0.007, 3.351, -0.446]} rotation={[0, Math.PI, 0]}>
           {props.children}
         </Html>

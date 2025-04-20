@@ -16,11 +16,11 @@ export default function Buttons() {
             nodes: Record<string, any>,
         }
 
-    // Audio context
+    // Audio states
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [buttonClickSound, setButtonClickSound] = useState<AudioBuffer | null>(null);
 
-    // Carregar o som do botão
+    // Load sounds
     useEffect(() => {
         getExternalSound({
             setContext: setAudioContext,
@@ -42,7 +42,7 @@ export default function Buttons() {
         button4: useRef<THREE.Mesh>(null),
     }
 
-    // States
+    // Component states
     const [buttonStates, setButtonStates] = useState({
         isButton1Pressed: false,
         isButton2Pressed: false,
@@ -100,6 +100,7 @@ export default function Buttons() {
         }
     }
 
+    // Button keyboard handler
     useFrame(() => {
         const { up, down, left, right } = get()
         if (up && !counters.up) {

@@ -13,6 +13,8 @@ export default function Joystick() {
         {
             nodes: Record<string, any>,
         }
+
+    // Redux
     const dispatch = useDispatch()
 
     // Refs
@@ -20,13 +22,13 @@ export default function Joystick() {
     const initialMousePosition = useRef(new THREE.Vector2());
     const currentMousePosition = useRef(new THREE.Vector2());
 
-    // States
+    // Component states
     const [isDragging, setIsDragging] = useState(false)
 
     // Keyboard controls
     const [, get] = useKeyboardControls()
 
-    // Joystick Handlers
+    // Joystick manual handlers
     const handlePointerDown = (event: PointerEvent) => {
         setIsDragging(true)
         initialMousePosition.current.set(event.clientX, event.clientY);
@@ -56,6 +58,7 @@ export default function Joystick() {
         setIsDragging(false)
     }
 
+    // Joystick keyboard handler
     useFrame(() => {
         const { up, down, left, right } = get()
         const joystickSpeed = 0.075
@@ -72,7 +75,7 @@ export default function Joystick() {
         }
     })
 
-    // Capturar movimentos do mouse fora do joystick
+    // Capture mouse events to manually move the joystick
     useEffect(() => {
         const handleGlobalPointerMove = (event: PointerEvent) => handlePointerMove(event);
         const handleGlobalPointerUp = () => handlePointerUp();

@@ -14,15 +14,20 @@ import TurnOff from './components/utils/turn-off';
 import Options from './components/pages/options';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './components/utils/404';
+import Binds from './components/pages/binds';
 
 function App() {
+
+  // States
   const [manualView, setManualView] = useState<boolean>(true);
 
+  // Redux
   const visible = useSelector((state: IRootState) => state.arcade[0].arcadeVisible);
   const path = useSelector((state: IRootState) => state.arcade[1].path);
   const dispatch = useDispatch();
-  const isInDevelopment = import.meta.env.VITE_DEVELOPMENT === 'true';
 
+  // Development mode
+  const isInDevelopment = import.meta.env.VITE_DEVELOPMENT === 'true';
   useEffect(() => {
     if (isInDevelopment) {
       setManualView(false);
@@ -32,7 +37,7 @@ function App() {
     }
   }, []);
 
-  // Desabilitar menus do navegador
+  // Disable browser default menus
   document.addEventListener('dblclick', function (event) {
     event.preventDefault();
     return false;
@@ -46,6 +51,7 @@ function App() {
     return false;
   }, false);
 
+  // Function to route the application
   const getComponent = () => {
     switch (path) {
       case '/entrace':
@@ -56,6 +62,8 @@ function App() {
         return <TurnOff />;
       case '/options':
         return <Options />;
+      case '/options/controls':
+        return <Binds />
       case '/games':
         return <GamesList />;
       default:

@@ -9,19 +9,19 @@ export default function Screen({ children }: { children: JSX.Element | null }) {
 
     const { size } = useThree();
 
-    // Responsividade
+    // Responsivity
     const aspectRatio = size.width / size.height;
     const cameraFov = aspectRatio > 2 ? aspectRatio > 3 ? 32 : 40 : aspectRatio < 1 ? aspectRatio < 0.85 ? aspectRatio < 0.5 ? 50 * (1 + 0.5 * (1 / aspectRatio - 1)) : 60 * (1 + 0.5 * (1 / aspectRatio - 1)) : 60 : 50;
     const cameraYPosition = aspectRatio > 2 ? aspectRatio > 3 ? 2.15 : 2.5 : aspectRatio < 0.5 ? 2.425 : 2.9;
     const cameraXRotation = aspectRatio > 2 ? aspectRatio > 3 ? 0.39 : 0.25 : aspectRatio < 0.5 ? 0.3 : 0.1;
     const arcadeStretch = aspectRatio > 2 ? aspectRatio > 3 ? 0 : 0.125 : aspectRatio < 0.5 ? 0.05 : 0;
-    // Girar a câmera para celulares
     const cameraZRotation = aspectRatio < 0.85 ? Math.PI / 2 : 0;
 
-    // Referência das spotlights
+    // Refs
     const light1 = useRef<THREE.SpotLight | null>(null);
     const light2 = useRef<THREE.SpotLight | null>(null);
 
+    // Function to update the arcade lights color based on time
     const getCycleColor = (t: number) => {
         const colorMin = 0.5;
         const colorMax = 0.8;
@@ -32,6 +32,7 @@ export default function Screen({ children }: { children: JSX.Element | null }) {
         return new THREE.Color().setHSL(hue, saturation, lightness);
     };
 
+    // Update the arcade lights color based on time
     useFrame((state) => {
 
         const t = state.clock.elapsedTime;
@@ -86,9 +87,9 @@ export default function Screen({ children }: { children: JSX.Element | null }) {
             </Arcade>
             <EffectComposer>
                 <Bloom
-                    intensity={0.1} // Intensidade do brilho
-                    luminanceThreshold={0.7} // Limiar de luminância (aplica o bloom apenas a áreas brilhantes)
-                    luminanceSmoothing={0.05} // Suavidade do efeito
+                    intensity={0.1}
+                    luminanceThreshold={0.7}
+                    luminanceSmoothing={0.05}
                 />
             </EffectComposer>
         </>
