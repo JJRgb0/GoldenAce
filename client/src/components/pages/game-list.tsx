@@ -76,11 +76,11 @@ export default function GameList() {
 
     // Go back to main menu
     useEffect(() => {
-        if (buttonsControls[2]) {
+        if (buttonsControls.btnRight) {
             dispatch(setPath('/'))
         }
 
-    }, [buttonsControls[2]]);
+    }, [buttonsControls.btnRight]);
 
     // Update and animate options in carousel format
     useEffect(() => {
@@ -163,12 +163,12 @@ export default function GameList() {
 
     return (
         <main className="w-full h-full bg-background relative flex justify-center items-center flex-col gap-10">
-            <h1 className="text-white text-7xl font-bold font-byte">Game List</h1>
-            <div ref={wrapper} className="w-[70%] h-[75%] flex justify-center items-center">
+            <h1 className="text-7xl font-bold">Game List</h1>
+            <section ref={wrapper} className="w-[70%] h-[75%] flex justify-center items-center">
                 <div className={`${sideOpStyle} translate-x-[-250px]`} />
                 <div className={`${mainOpStyle} translate-x-0`} />
                 <div className={`${sideOpStyle} translate-x-[250px]`} />
-            </div>
+            </section>
         </main>
     )
 }

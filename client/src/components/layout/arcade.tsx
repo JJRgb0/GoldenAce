@@ -20,6 +20,7 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
   // Redux
   const screenVisible = useSelector((state: IRootState) => state.arcade[0].screenVisible);
   const arcadeBrightness = useSelector((state: IRootState) => state.arcade[2].brightness);
+  const controlsBinds = useSelector((state: IRootState) => state.controls[2] as unknown as Record<string, string[]>);
 
   // Component states
   const [hue, setHue] = useState(0);
@@ -93,10 +94,10 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
       </mesh>
       <KeyboardControls
         map={[
-          { name: 'up', keys: ['I', 'i'] },
-          { name: 'down', keys: ['K', 'k'] },
-          { name: 'left', keys: ['J', 'j'] },
-          { name: 'right', keys: ['L', 'l'] },
+          { name: 'up', keys: controlsBinds.btnUp },
+          { name: 'down', keys: controlsBinds.btnDown },
+          { name: 'left', keys: controlsBinds.btnLeft },
+          { name: 'right', keys: controlsBinds.btnRight },
         ]}>
         <Buttons />
       </KeyboardControls>
@@ -138,10 +139,10 @@ const Arcade = (props: JSX.IntrinsicElements['group']) => {
         material={materials['Pure Black']}
       />
       <KeyboardControls map={[
-        { name: 'up', keys: ['W', 'w'] },
-        { name: 'down', keys: ['S', 's'] },
-        { name: 'left', keys: ['A', 'a'] },
-        { name: 'right', keys: ['D', 'd'] },
+        { name: 'up', keys: controlsBinds.up },
+        { name: 'down', keys: controlsBinds.down },
+        { name: 'left', keys: controlsBinds.left },
+        { name: 'right', keys: controlsBinds.right },
       ]}>
         <Joystick />
       </KeyboardControls>

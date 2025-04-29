@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "../../redux";
 import { cn, getExternalSound, playSound } from "../../lib/utils";
@@ -15,7 +15,10 @@ export default function Options() {
     const [testSound, setTestSound] = useState<AudioBuffer | null>(null);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
-    //Redux
+    // Refs
+    const isMounted = useRef(false);
+
+    // Redux
     const dispatch = useDispatch();
     const joystickControls = useSelector((state: IRootState) => state.controls[0])
     const buttonsControls = useSelector((state: IRootState) => state.controls[1])
@@ -87,38 +90,41 @@ export default function Options() {
         }
     }, [joystickControls]);
 
-    // Navigation in the component
-    useEffect(() => {
-        if (buttonsControls[2]) {
-            dispatch(setPath('/'))
-        } else if (buttonsControls[3] && currentOption === 1) {
-            dispatch(setPath('/options/controls'))
-        }
-
-    }, [buttonsControls[2], buttonsControls[3]]);
-
     // Play test volume sound
     useEffect(() => {
-        if (buttonsControls[4] && currentOption === 2) {
+        if (buttonsControls.btnDown && currentOption === 2) {
             playSound({
                 volume: arcadeVolume!,
                 audioContext: audioContext,
                 sound: testSound
             })
         }
-    }, [buttonsControls[4]]);
+    }, [buttonsControls.btnDown]);
+
+    // Navigation in the component
+    useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            return;
+        } else if (buttonsControls.btnRight) {
+            dispatch(setPath('/'))
+        } else if (buttonsControls.btnLeft && currentOption === 1) {
+            dispatch(setPath('/options/controls'))
+        }
+
+    }, [buttonsControls.btnLeft, buttonsControls.btnRight]);
 
     return (
         <menu className="relative bg-background w-full h-full">
             <nav className="flex justify-center flex-col items-center w-auto h-[100%] gap-30">
-                <span className={cn("text-5xl font-bold text-white font-byte", currentOption === 1 ? "opacity-100" : "opacity-60")}>Controls</span>
+                <h2 className={cn("text-5xl font-bold", currentOption === 1 ? "opacity-100" : "opacity-60")}>Controls</h2>
                 <label className={cn("flex flex-col justify-center items-center gap-8", currentOption === 2 ? "opacity-100" : "opacity-60")}>
-                    <span className="text-5xl font-bold text-white font-byte">Volume</span>
+                    <h2 className="text-5xl font-bold">Volume</h2>
                     <input type="range" min="0" max="100" value={arcadeVolume} style={{ '--value': `${arcadeVolume}%` } as CSSProperties & { '--value'?: string }} className="w-[250px] h-3 bg-white rounded-xs appearance-none cursor-pointer" />
                 </label>
-                <p className={cn("text-white text-4xl absolute ml-[64.5%] mt-[4%] px-3.5 py-2 border-2 rounded-lg font-bold font-byte text-center", currentOption === 2 ? "opacity-100" : "opacity-60")}>Test Volume <br /> Bottom Button</p>
+                <p className={cn("text-4xl absolute ml-[64.5%] mt-[4%] px-3.5 py-2 border-2 rounded-lg font-bold text-center", currentOption === 2 ? "opacity-100" : "opacity-60")}>Test Volume <br /> Bottom Button</p>
                 <label className={cn("flex flex-col justify-center items-center gap-8", currentOption === 3 ? "opacity-100" : "opacity-60")}>
-                    <span className="text-5xl font-bold text-white font-byte">Brightness</span>
+                    <h2 className="text-5xl font-bold">Brightness</h2>
                     <input type="range" min="0" max="100" value={arcadeBrightness} style={{ '--value': `${arcadeBrightness}%` } as CSSProperties & { '--value'?: string }} className="w-[250px] h-3 bg-white rounded-xs appearance-none cursor-pointer" />
                 </label>
             </nav>

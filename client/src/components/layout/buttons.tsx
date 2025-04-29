@@ -65,8 +65,9 @@ export default function Buttons() {
         if (!buttonRef.current || !visible) return
         const button = buttonRef.current
         const i = button.name
+        const name = i === '1' ? 'btnUp' : i === '2' ? 'btnRight' : i === '3' ? 'btnLeft' : 'btnDown'
         dispatch(setButtons({
-            [i]: true,
+            [name]: true,
         }))
         if (buttonRef) {
             button.position.set(0, -0.02, 0)
@@ -85,8 +86,9 @@ export default function Buttons() {
         if (!buttonRef.current || !visible) return
         const button = buttonRef.current
         const i = button.name
+        const name = i === '1' ? 'btnUp' : i === '2' ? 'btnRight' : i === '3' ? 'btnLeft' : 'btnDown'
         dispatch(setButtons({
-            [i]: false,
+            [name]: false,
         }))
         if (button === buttonRefs.button2.current || button === buttonRefs.button3.current) {
             setScreenCounter(0);

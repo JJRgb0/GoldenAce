@@ -21,7 +21,7 @@ export default function Entrace() {
 
     // Handle video speed
     useEffect(() => {
-        if (buttonsControls[1]) {
+        if (buttonsControls.btnUp) {
             if (video.current) {
                 video.current.playbackRate = 2;
             }
@@ -30,7 +30,7 @@ export default function Entrace() {
                 video.current.playbackRate = 1;
             }
         }
-    }, [buttonsControls[1]])
+    }, [buttonsControls.btnUp])
 
     return (
         <video autoPlay={true} ref={video} onEnded={() => dispatch(setPath('/'))} src="/videos/goldenAceEntrace.mp4" width={878} height={777} />

@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const isCustomBinds = localStorage.getItem('arcadeBinds') !== null;
+
 const controlsSlice = createSlice({
     name: 'controls',
     initialState: [
@@ -12,10 +14,21 @@ const controlsSlice = createSlice({
         },
         // Buttons
         {
-            1: false,
-            2: false,
-            3: false,
-            4: false,
+            btnUp: false,
+            btnLeft: false,
+            btnRight: false,
+            btnDown: false,
+        },
+        // Binds
+        {
+            up: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).up : ['W', 'w'],
+            down: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).down : ['S', 's'],
+            left: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).left : ['A', 'a'],
+            right: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).right : ['D', 'd'],
+            btnUp: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).btnUp : ['I', 'i'],
+            btnLeft: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).btnLeft : ['J', 'j'],
+            btnRight: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).btnRight : ['L', 'l'],
+            btnDown: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).btnDown : ['K', 'k'],
         }
     ],
     reducers: {
@@ -33,22 +46,14 @@ const controlsSlice = createSlice({
                 ...action.payload,
             };
         },
-        resetControls(state) {
-            state[0] = {
-                up: false,
-                down: false,
-                left: false,
-                right: false,
-            };
-            state[1] = {
-                up: false,
-                down: false,
-                left: false,
-                right: false,
+        setBinds(state, action) {
+            state[2] = {
+                ...state[2],
+                ...action.payload,
             };
         }
     }
 })
 
-export const { setJoystick, setButtons, resetControls } = controlsSlice.actions;
+export const { setJoystick, setButtons, setBinds } = controlsSlice.actions;
 export const controlsReducer = controlsSlice.reducer;

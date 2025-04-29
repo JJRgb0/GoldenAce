@@ -6,9 +6,9 @@ import { IRootState } from "../../redux";
 import useThrottle from "../../hooks/use-throttle";
 
 const menuItems = [
-    { name: 'GAMES', path: '/games', option: 1 },
-    { name: 'OPTIONS', path: '/options', option: 2 },
-    { name: 'QUIT', option: 3 },
+    { name: 'Games', path: '/games', option: 1 },
+    { name: 'Options', path: '/options', option: 2 },
+    { name: 'Quit', option: 3 },
 ]
 
 export default function Home() {
@@ -23,6 +23,7 @@ export default function Home() {
 
     // Refs
     const homeScreen = useRef<HTMLDivElement | null>(null);
+    const isMounted = useRef(false);
 
     // Redux
     const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export default function Home() {
     }, [])
 
     // Function to change the current option
-    const handleJoystick = useThrottle(() => {
+    const handleOptionChange = useThrottle(() => {
         if (joystickControls.up) {
             playSound({
                 volume: arcadeVolume!,
@@ -61,13 +62,16 @@ export default function Home() {
     // Change the current option
     useEffect(() => {
         if (joystickControls.up || joystickControls.down) {
-            handleJoystick();
+            handleOptionChange();
         }
     }, [joystickControls]);
 
     // Select the current option
     useEffect(() => {
-        if (buttonsControls[3]) {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            return;
+        } else if (buttonsControls.btnLeft) {
             if (currentOption === 3) {
                 exit();
             }
@@ -76,7 +80,7 @@ export default function Home() {
             }
         }
 
-    }, [buttonsControls[3]]);
+    }, [buttonsControls.btnLeft]);
 
     // Arcade turn off animation
     const exit = () => {
@@ -103,11 +107,11 @@ export default function Home() {
 
     return (
         <section className="w-full h-full flex justify-center items-center">
-            <menu ref={homeScreen} className={cn("text-black relative bg-background w-full h-full bg-cover overflow-hidden", isTurningOff ? "rounded-[50%]" : "rounded-none")}>
+            <menu ref={homeScreen} className={cn("relative bg-background w-full h-full bg-cover overflow-hidden", isTurningOff ? "rounded-[50%]" : "rounded-none")}>
                 <nav className="flex justify-center items-center w-auto h-[100%] mt-7">
                     <ul className="flex flex-col justify-center items-center gap-15">
                         {menuItems.map((item, index) => (
-                            <li key={index} className={cn("text-7xl font-bold text-white font-byte", currentOption === item.option ? "opacity-100" : "opacity-60")}>
+                            <li key={index} className={cn("text-7xl uppercase font-bold", currentOption === item.option ? "opacity-100" : "opacity-60")}>
                                 {item.name}
                             </li>
                         ))}
