@@ -31,6 +31,7 @@ export default function GameList() {
 
     // Refs
     const wrapper = useRef<HTMLDivElement>(null);
+    const isMounted = useRef(false);
 
     const sideOpStyle = "w-[137.5px] duration-350 absolute border-4 bg-blue-500 border-white rounded-md h-[275px] text-4xl text-white font-byte flex justify-center items-center";
     const mainOpStyle = "w-[275px] duration-350 absolute border-4 bg-red-500 border-white rounded-md h-[550px] text-7xl text-white font-byte flex justify-center items-center";
@@ -74,13 +75,18 @@ export default function GameList() {
         }
     }, [joystickControls]);
 
-    // Go back to main menu
+    // Navigation in the component
     useEffect(() => {
-        if (buttonsControls.btnRight) {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            return;
+        } else if (buttonsControls.btnRight) {
             dispatch(setPath('/'))
+        } else if (buttonsControls.btnLeft) {
+            dispatch(setPath(games[currentOption - 1].path));
         }
 
-    }, [buttonsControls.btnRight]);
+    }, [buttonsControls.btnRight, buttonsControls.btnLeft]);
 
     // Update and animate options in carousel format
     useEffect(() => {

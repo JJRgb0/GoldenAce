@@ -15,6 +15,7 @@ import Options from './components/pages/options';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './components/utils/404';
 import Binds from './components/pages/binds';
+import Snake from './components/games/snake';
 
 function App() {
 
@@ -66,6 +67,8 @@ function App() {
         return <Binds />
       case '/games':
         return <GamesList />;
+      case '/snake':
+        return <Snake />;
       default:
         return null;
     }
@@ -73,23 +76,25 @@ function App() {
 
   return (
     <>
-      {manualView && <Manual setView={setManualView} />}
       <BrowserRouter>
         <Routes>
           <Route index element={
-            <div aria-disabled={!visible} className={cn("relative w-full h-screen duration-1200", visible ? "opacity-100" : "opacity-0")}>
-              <Canvas
-                className="absolute inset-0 z-0"
-                shadows={{ type: THREE.PCFSoftShadowMap }}
-                gl={{ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } } as GLProps}
-              >
-                <Screen>
-                  {
-                    <Provider store={store}>{getComponent()}</Provider>
-                  }
-                </Screen>
-              </Canvas>
-            </div>
+            <>
+              {manualView && <Manual setView={setManualView} />}
+              <div aria-disabled={!visible} className={cn("relative w-full h-screen duration-1200", visible ? "opacity-100" : "opacity-0")}>
+                <Canvas
+                  className="absolute inset-0 z-0"
+                  shadows={{ type: THREE.PCFSoftShadowMap }}
+                  gl={{ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } } as GLProps}
+                >
+                  <Screen>
+                    {
+                      <Provider store={store}>{getComponent()}</Provider>
+                    }
+                  </Screen>
+                </Canvas>
+              </div>
+            </>
           } />
           <Route path="*" element={<NotFound />} />
         </Routes>

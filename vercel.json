@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "src/app.js",
@@ -15,32 +14,68 @@
   ],
   "routes": [
     {
-      "src": "/api(.*)",
-      "dest": "src/app.js"
+      "src": "/games/([^/]+)/Build/(.*\\.wasm)\\.br$",
+      "headers": {
+        "Content-Encoding": "br",
+        "Content-Type": "application/wasm"
+      },
+      "dest": "/client/games/$1/Build/$2.br"
+    },
+    {
+      "src": "/games/([^/]+)/Build/(.*\\.js)\\.br$",
+      "headers": {
+        "Content-Encoding": "br",
+        "Content-Type": "application/javascript"
+      },
+      "dest": "/client/games/$1/Build/$2.br"
+    },
+    {
+      "src": "/games/([^/]+)/Build/(.*\\.data)\\.br$",
+      "headers": {
+        "Content-Encoding": "br",
+        "Content-Type": "application/octet-stream"
+      },
+      "dest": "/client/games/$1/Build/$2.br"
+    },
+    {
+      "src": "/games/([^/]+)/Build/(.*)\\.br$",
+      "headers": {
+        "Content-Encoding": "br",
+        "Content-Type": "application/octet-stream"
+      },
+      "dest": "/client/games/$1/Build/$2.br"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/app.js"
     },
     {
       "src": "/assets/(.*)",
-      "dest": "client/assets/$1"
+      "dest": "/client/assets/$1"
     },
     {
       "src": "/images/(.*)",
-      "dest": "client/images/$1"
+      "dest": "/client/images/$1"
     },
     {
       "src": "/videos/(.*)",
-      "dest": "client/videos/$1"
+      "dest": "/client/videos/$1"
     },
     {
       "src": "/audios/(.*)",
-      "dest": "client/audios/$1"
+      "dest": "/client/audios/$1"
     },
     {
       "src": "/models/(.*)",
-      "dest": "client/models/$1"
+      "dest": "/client/models/$1"
+    },
+    {
+      "src": "/games/(.*)",
+      "dest": "/client/games/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "client/index.html"
+      "dest": "/client/index.html"
     }
   ]
 }

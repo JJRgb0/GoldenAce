@@ -110,7 +110,9 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "public/games",
+    "src/components/games"
   ],
   "references": [
     {

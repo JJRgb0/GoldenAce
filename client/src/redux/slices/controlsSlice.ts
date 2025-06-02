@@ -1,3 +1,4 @@
+import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 import { createSlice } from "@reduxjs/toolkit";
 
 const isCustomBinds = localStorage.getItem('arcadeBinds') !== null;
@@ -29,7 +30,18 @@ const controlsSlice = createSlice({
             btnLeft: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).btnLeft : ['J', 'j'],
             btnRight: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).btnRight : ['L', 'l'],
             btnDown: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).btnDown : ['K', 'k'],
-        }
+        },
+        // Binds event Properties
+        {
+            eUp: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eUp : { key: 'w', code: 'KeyW' },
+            eDown: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eDown : { key: 's', code: 'KeyS' },
+            eLeft: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eLeft : { key: 'a', code: 'KeyA' },
+            eRight: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eRight : { key: 'd', code: 'KeyD' },
+            eBtnUp: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eBtnUp : { key: 'i', code: 'KeyI' },
+            eBtnLeft: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eBtnLeft : { key: 'j', code: 'KeyJ' },
+            eBtnRight: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eBtnRight : { key: 'l', code: 'KeyL' },
+            eBtnDown: isCustomBinds ? JSON.parse(localStorage.getItem('arcadeBinds')!).eBtnDown : { key: 'k', code: 'KeyK' },
+        },
     ],
     reducers: {
         setJoystick(state, action) {
@@ -51,9 +63,15 @@ const controlsSlice = createSlice({
                 ...state[2],
                 ...action.payload,
             };
-        }
+        },
+        setBindsEventProperties(state, action) {
+            state[3] = {
+                ...state[3],
+                ...action.payload,
+            };
+        },
     }
 })
 
-export const { setJoystick, setButtons, setBinds } = controlsSlice.actions;
+export const { setJoystick, setButtons, setBinds, setBindsEventProperties } = controlsSlice.actions;
 export const controlsReducer = controlsSlice.reducer;

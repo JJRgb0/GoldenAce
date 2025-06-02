@@ -4,7 +4,7 @@ import { IRootState } from "../../redux";
 import { setPath } from "../../redux/slices/arcadeSlice";
 import useThrottle from "../../hooks/use-throttle";
 import { cn, getExternalSound, playSound } from "../../lib/utils";
-import { setBinds } from "../../redux/slices/controlsSlice";
+import { setBinds, setBindsEventProperties } from "../../redux/slices/controlsSlice";
 
 export default function Binds() {
 
@@ -14,6 +14,7 @@ export default function Binds() {
     const buttonsControls = useSelector((state: IRootState) => state.controls[1])
     const arcadeVolume = useSelector((state: IRootState) => state.arcade[2].volume)
     const controlsBinds = useSelector((state: IRootState) => state.controls[2])
+    const bindsEventProperties = useSelector((state: IRootState) => state.controls[3]);
 
     // Audio states
     const [changeOpSound, setChangeOpSound] = useState<AudioBuffer | null>(null);
@@ -36,6 +37,16 @@ export default function Binds() {
             { name: 'Right', key: controlsBinds.btnRight as string[] },
         ]
     });
+    const [eventProps, setEventProps] = useState({
+        eUp: bindsEventProperties.eUp,
+        eDown: bindsEventProperties.eDown,
+        eLeft: bindsEventProperties.eLeft,
+        eRight: bindsEventProperties.eRight,
+        eBtnUp: bindsEventProperties.eBtnUp,
+        eBtnDown: bindsEventProperties.eBtnDown,
+        eBtnLeft: bindsEventProperties.eBtnLeft,
+        eBtnRight: bindsEventProperties.eBtnRight,
+    })
     const [userInput, setUserInput] = useState<number | null>(null);
     const [controlsDisabled, setControlsDisabled] = useState(false);
 
@@ -142,6 +153,7 @@ export default function Binds() {
         }
         if (includesInBinds()) return;
 
+
         // Set the component states related to the binds
         setAllbinds((prev) => {
             const newArray = [...prev];
@@ -154,6 +166,21 @@ export default function Binds() {
                 newObj.joystick[userInputValue.current!].key = inputArray;
             } else {
                 newObj.buttons[userInputValue.current! - bindsState.joystick.length].key = inputArray;
+            }
+            return newObj;
+        })
+        setEventProps((prev) => {
+            const newObj = { ...prev };
+            if (userInputValue.current! <= bindsState.joystick.length - 1) {
+                newObj[`e${bindsState.joystick[userInputValue.current!].name}` as keyof typeof prev] = {
+                    key: e.key,
+                    code: e.code,
+                }
+            } else {
+                newObj[`eBtn${bindsState.buttons[userInputValue.current! - bindsState.joystick.length].name}` as keyof typeof prev] = {
+                    key: e.key,
+                    code: e.code,
+                }
             }
             return newObj;
         })
@@ -190,7 +217,17 @@ export default function Binds() {
             btnUp: bindsState.buttons[0].key,
             btnDown: bindsState.buttons[1].key,
             btnRight: bindsState.buttons[3].key,
-            btnLeft: bindsState.buttons[2].key
+            btnLeft: bindsState.buttons[2].key,
+        }))
+        dispatch(setBindsEventProperties({
+            eUp: eventProps.eUp,
+            eDown: eventProps.eDown,
+            eLeft: eventProps.eLeft,
+            eRight: eventProps.eRight,
+            eBtnUp: eventProps.eBtnUp,
+            eBtnDown: eventProps.eBtnDown,
+            eBtnLeft: eventProps.eBtnLeft,
+            eBtnRight: eventProps.eBtnRight,
         }))
         localStorage.setItem('arcadeBinds', JSON.stringify({
             up: bindsState.joystick[0].key,
@@ -200,7 +237,15 @@ export default function Binds() {
             btnUp: bindsState.buttons[0].key,
             btnDown: bindsState.buttons[1].key,
             btnRight: bindsState.buttons[3].key,
-            btnLeft: bindsState.buttons[2].key
+            btnLeft: bindsState.buttons[2].key,
+            eUp: eventProps.eUp,
+            eDown: eventProps.eDown,
+            eLeft: eventProps.eLeft,
+            eRight: eventProps.eRight,
+            eBtnUp: eventProps.eBtnUp,
+            eBtnDown: eventProps.eBtnDown,
+            eBtnLeft: eventProps.eBtnLeft,
+            eBtnRight: eventProps.eBtnRight,
         }))
     }, [bindsState])
 
