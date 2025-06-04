@@ -6,10 +6,9 @@ import { getExternalSound, playSound } from "../../lib/utils";
 import useThrottle from "../../hooks/use-throttle";
 
 const games = [
-    { name: 'Snake', path: '/snake' },
-    { name: 'Tetris', path: '/tetris' },
-    { name: 'Pacman', path: '/pacman' },
-    { name: 'Doom', path: '/doom' },
+    { path: '/snake', cover: '/images/game-list/snake.png' },
+    { cover: '/images/game-list/coming.png' },
+    { cover: '/images/game-list/coming.png' },
 ]
 
 export default function GameList() {
@@ -33,8 +32,8 @@ export default function GameList() {
     const wrapper = useRef<HTMLDivElement>(null);
     const isMounted = useRef(false);
 
-    const sideOpStyle = "w-[137.5px] duration-350 absolute border-4 bg-blue-500 border-white rounded-md h-[275px] text-4xl text-white font-byte flex justify-center items-center";
-    const mainOpStyle = "w-[275px] duration-350 absolute border-4 bg-red-500 border-white rounded-md h-[550px] text-7xl text-white font-byte flex justify-center items-center";
+    const sideOpStyle = `w-[137.5px] duration-350 absolute border-4 border-white bg-center bg-cover rounded-lg h-[275px] text-4xl flex justify-center items-center`;
+    const mainOpStyle = `w-[275px] duration-350 absolute border-4 border-white bg-center bg-cover rounded-lg h-[550px] text-7xl flex justify-center items-center`;
 
     // Load sounds
     useEffect(() => {
@@ -82,7 +81,7 @@ export default function GameList() {
             return;
         } else if (buttonsControls.btnRight) {
             dispatch(setPath('/'))
-        } else if (buttonsControls.btnLeft) {
+        } else if (buttonsControls.btnLeft && games[currentOption - 1].path) {
             dispatch(setPath(games[currentOption - 1].path));
         }
 
@@ -95,58 +94,58 @@ export default function GameList() {
             if (divIndex === 1) {
                 if (side === 'left') {
                     setTimeout(() => {
-                        wrapper.current!.children[0].innerHTML = (games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].name;
+                        (wrapper.current!.children[0] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].cover})`;
                     }, 175)
                 }
                 else {
-                    wrapper.current.children[0].innerHTML = (games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].name;
+                    (wrapper.current!.children[0] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].cover})`;
                 }
-                wrapper.current.children[1].innerHTML = (games.filter((game) => (game === games[currentOption - 1])))[0].name;
+                (wrapper.current!.children[1] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (game === games[currentOption - 1])))[0].cover})`;
                 if (side === 'right') {
                     setTimeout(() => {
-                        wrapper.current!.children[2].innerHTML = (games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].name;
+                        (wrapper.current!.children[2] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].cover})`;
                     }, 175)
                 }
                 else {
-                    wrapper.current.children[2].innerHTML = (games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].name;
+                    (wrapper.current!.children[2] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].cover})`;
                 }
             }
             else if (divIndex === 2) {
                 if (side === 'right') {
                     setTimeout(() => {
-                        wrapper.current!.children[0].innerHTML = (games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].name;
+                        (wrapper.current!.children[0] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].cover})`;
                     }, 175)
                 }
                 else {
-                    wrapper.current.children[0].innerHTML = (games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].name;
+                    (wrapper.current!.children[0] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].cover})`;
                 }
                 if (side === 'left') {
                     setTimeout(() => {
-                        wrapper.current!.children[1].innerHTML = (games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].name;
+                        (wrapper.current!.children[1] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].cover})`;
                     }, 175)
                 }
                 else {
-                    wrapper.current.children[1].innerHTML = (games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].name;
+                    (wrapper.current!.children[1] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].cover})`;
                 }
-                wrapper.current.children[2].innerHTML = (games.filter((game) => (game === games[currentOption - 1])))[0].name;
+                (wrapper.current!.children[2] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (game === games[currentOption - 1])))[0].cover})`;
             }
             else if (divIndex === 3) {
-                wrapper.current.children[0].innerHTML = (games.filter((game) => (game === games[currentOption - 1])))[0].name;
+                (wrapper.current!.children[0] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (game === games[currentOption - 1])))[0].cover})`;
                 if (side === 'right') {
                     setTimeout(() => {
-                        wrapper.current!.children[1].innerHTML = (games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].name;
+                        (wrapper.current!.children[1] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].cover})`;
                     }, 175)
                 }
                 else {
-                    wrapper.current.children[1].innerHTML = (games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].name;
+                    (wrapper.current!.children[1] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === games.length ? games[0] : game === games[currentOption])))[0].cover})`;
                 }
                 if (side === 'left') {
                     setTimeout(() => {
-                        wrapper.current!.children[2].innerHTML = (games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].name;
+                        (wrapper.current!.children[2] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].cover})`;
                     }, 175)
                 }
                 else {
-                    wrapper.current!.children[2].innerHTML = (games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].name;
+                    (wrapper.current!.children[2] as HTMLDivElement).style.backgroundImage = `url(${(games.filter((game) => (currentOption === 1 ? game === games[games.length - 1] : game === games[currentOption - 2])))[0].cover})`;
                 }
             }
 

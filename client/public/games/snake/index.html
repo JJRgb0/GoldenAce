@@ -49,17 +49,17 @@
     }
 
     var script = document.createElement("script");
-    script.src = "Build/snakebuild-v1.1.loader.js";
+    script.src = "Build/snakebuild-v1.2.loader.js";
     script.onload = () => {
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/snakebuild-v1.1.data.br",
-        frameworkUrl: "Build/snakebuild-v1.1.framework.js.br",
-        codeUrl: "Build/snakebuild-v1.1.wasm.br",
+        dataUrl: "Build/snakebuild-v1.2.data.br",
+        frameworkUrl: "Build/snakebuild-v1.2.framework.js.br",
+        codeUrl: "Build/snakebuild-v1.2.wasm.br",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Snake",
-        productVersion: "1.1",
+        productVersion: "1.2",
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }).then((unityInstance) => {

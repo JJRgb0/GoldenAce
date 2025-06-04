@@ -112,7 +112,8 @@
   "include": [
     "src/**/*",
     "public/games",
-    "src/components/games"
+    "src/components/games",
+    "middleware.ts"
   ],
   "references": [
     {

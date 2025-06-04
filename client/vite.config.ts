@@ -40,4 +40,5 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.mjs' // Aponta para o arquivo PostCSS
   },
+  envDir: '../',
 });

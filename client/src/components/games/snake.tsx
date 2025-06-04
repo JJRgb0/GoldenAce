@@ -1,19 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { IRootState } from "../../redux"
+import { setPath } from "../../redux/slices/arcadeSlice";
+import usePrevious from "../../hooks/use-previous";
 
 declare global {
     interface Window {
         unityInstance?: any; // ou um tipo mais específico se você souber
     }
-}
-
-function usePrevious<T>(value: T): T | undefined {
-    const ref = useRef<T | undefined>(undefined);
-    useEffect(() => {
-        ref.current = value;
-    }); // Atualiza após cada render para ter o valor da render anterior na próxima
-    return ref.current;
 }
 
 export default function Snake() {
@@ -24,6 +18,8 @@ export default function Snake() {
     const joystickControls = useSelector((state: IRootState) => state.controls[0])
     const buttonsControls = useSelector((state: IRootState) => state.controls[1])
     const bindsEventProperties = useSelector((state: IRootState) => state.controls[3]);
+    const dispatch = useDispatch();
+
 
     // States
     const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -39,6 +35,9 @@ export default function Snake() {
     const prevButtonsRight = usePrevious(buttonsControls.btnRight);
     const prevButtonsLeft = usePrevious(buttonsControls.btnLeft);
 
+    const isInDevelopment = import.meta.env.VITE_DEVELOPMENT === 'true';
+    const url = import.meta.env.VITE_URL;
+
     const unityWindow = useMemo(() => {
         if (iframeRef.current && iframeRef.current.contentWindow) {
             return iframeRef.current.contentWindow;
@@ -46,11 +45,31 @@ export default function Snake() {
         return window;
     }, [iframeLoaded])
 
+    // Add quit game event listener in window
+    useEffect(() => {
+        if (!iframeLoaded) return;
+        const handleMessageFromUnity = (event: MessageEvent) => {
+            const eventData = JSON.parse(event.data);
+            if (eventData.type === 'unityGameWantsToClose') {
+                dispatch(setPath('/games'))
+            }
+            if (iframeRef.current) {
+                iframeRef.current.src = 'about:blank';
+            }
+        }
+
+        window.addEventListener('message', handleMessageFromUnity);
+        return () => {
+            window.removeEventListener('message', handleMessageFromUnity);
+        }
+    }, [iframeLoaded])
+
+    // Send arcade binds to Unity when the iframe is loaded
     useEffect(() => {
         if (!iframeLoaded) return;
         const handleUnityReady = () => {
             if (iframeRef.current) {
-                const unityInstance = iframeRef.current.contentWindow!.unityInstance;
+                const unityInstance = unityWindow.unityInstance;
                 if (unityInstance) {
                     unityInstance.SendMessage('InputManager', 'SetExternalBinds', JSON.stringify({
                         "upJoystick": arcadeBinds.up[0],
@@ -60,6 +79,8 @@ export default function Snake() {
                         "returnButton": arcadeBinds.btnRight[0],
                         "selectButton": arcadeBinds.btnLeft[0],
                     }));
+                    unityInstance.SendMessage('GameManager', 'SetTargetOrigin', isInDevelopment ? 'http://localhost:5173' : url);
+                    unityInstance.SendMessage('GameManager', 'SetAudioVolume', arcadeVolume);
                     console.log('Binds setadas');
                 } else {
                     console.warn('Instância Unity não encontrada');
@@ -67,13 +88,14 @@ export default function Snake() {
             }
         }
 
-        iframeRef.current!.contentWindow!.addEventListener('unity-loaded', handleUnityReady);
+        unityWindow.addEventListener('unity-loaded', handleUnityReady);
 
         return () => {
-            iframeRef.current!.contentWindow!.removeEventListener('unity-loaded', handleUnityReady);
+            unityWindow.removeEventListener('unity-loaded', handleUnityReady);
         }
     }, [iframeLoaded])
 
+    // Control joystick and button events to Unity
     useEffect(() => {
         if (!iframeLoaded) return;
 

@@ -14,6 +14,18 @@
   ],
   "routes": [
     {
+      "src": "/(assets|audio|games|icons|images|models|videos)/(.+)",
+      "has": [
+        {
+          "type": "header",
+          "key": "Sec-Fetch-Dest",
+          "value": "document"
+        }
+      ],
+      "dest": "/client/index.html",
+      "status": 400
+    },
+    {
       "src": "/games/([^/]+)/Build/(.*\\.wasm)\\.br$",
       "headers": {
         "Content-Encoding": "br",

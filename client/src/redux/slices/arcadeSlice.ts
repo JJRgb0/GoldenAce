@@ -12,7 +12,7 @@ const arcadeSlice = createSlice({
         },
         {
             volume: localStorage.getItem('arcadeVolume') ? Number(localStorage.getItem('arcadeVolume')) : 50,
-            brightness: localStorage.getItem('arcadeBrightness') ? Number(localStorage.getItem('arcadeBrightness')) : 50,
+            brightness: localStorage.getItem('arcadeBrightness') ? Number(localStorage.getItem('arcadeBrightness')) : 70,
         }
     ],
     reducers: {
