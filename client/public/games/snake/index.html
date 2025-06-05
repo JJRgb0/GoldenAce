@@ -4,7 +4,6 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Unity Web Player | Snake</title>
   <style>
     body,
     html {
@@ -26,12 +25,76 @@
       display: block;
       margin: 0 auto;
     }
+
+    #snake-loading-bar {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: auto;
+      height: auto;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column-reverse;
+      gap: 1rem 0;
+    }
+
+    #snake-progress-bar-empty {
+      width: 400px;
+      height: 40px;
+      background-color: #333;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    #snake-progress-bar-full {
+      width: 0;
+      height: 100%;
+      background-color: #44C34C;
+      transition: width 0.2s ease-in-out;
+    }
+
+    #snake-logo {
+      width: 250px;
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: contain;
+      animation: snake-logo-animation .5s infinite linear;
+    }
+
+    @keyframes snake-logo-animation {
+      0% {
+        background-image: url('/icons/snake-loading/snake-loading1.png');
+      }
+
+      33% {
+        background-image: url('/icons/snake-loading/snake-loading2.png');
+      }
+
+      66% {
+        background-image: url('/icons/snake-loading/snake-loading3.png');
+      }
+
+      100% {
+        background-image: url('/icons/snake-loading/snake-loading4.png');
+      }
+    }
   </style>
 </head>
 
 <body style="text-align: center; padding: 0; border: 0; margin: 0;">
-  <canvas id="unity-canvas" width="878" height="777" tabindex="-1"
-    style="width: 878px; height: 777px; background: #231F20; transform: scaleY(0.95)"></canvas>
+  <div id="unity-container" style="width: 878px; height: 777px; position: relative; transform: scaleY(0.95)">
+    <div id="snake-loading-bar" style="display: none;">
+      <div id="snake-progress-bar-empty">
+        <div id="snake-progress-bar-full"></div>
+      </div>
+      <div id="snake-logo"></div>
+    </div>
+    <canvas id="unity-canvas" width="878" height="777" tabindex="-1"
+      style="width: 878px; height: 777px; background: #050505;"></canvas>
+  </div>
   <script>
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
       // Mobile device style: fill the whole browser client area with the game canvas:
@@ -48,6 +111,8 @@
       document.body.style.textAlign = "left";
     }
 
+    document.querySelector("#snake-loading-bar").style.display = "flex";
+
     var script = document.createElement("script");
     script.src = "Build/snakebuild-v1.2.loader.js";
     script.onload = () => {
@@ -62,7 +127,11 @@
         productVersion: "1.2",
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      }, (progress) => {
+        // Update the loading bar with the progress.
+        document.querySelector("#snake-progress-bar-full").style.width = (progress * 100) + "%";
       }).then((unityInstance) => {
+        document.querySelector("#snake-loading-bar").style.display = "none";
         // Unity instance created successfully.
         console.log("Unity instance created successfully.");
         window.unityInstance = unityInstance;

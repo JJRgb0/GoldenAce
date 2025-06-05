@@ -14,6 +14,10 @@
   ],
   "routes": [
     {
+      "src": "/favicon.ico",
+      "dest": "/client/favicon.ico"
+    },
+    {
       "src": "/(assets|audio|games|icons|images|models|videos)/(.+)",
       "has": [
         {
@@ -68,6 +72,10 @@
     {
       "src": "/images/(.*)",
       "dest": "/client/images/$1"
+    },
+    {
+      "src": "/icons/(.*)",
+      "dest": "/client/icons/$1"
     },
     {
       "src": "/videos/(.*)",
